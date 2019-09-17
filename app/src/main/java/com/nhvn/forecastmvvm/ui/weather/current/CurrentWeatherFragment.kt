@@ -1,13 +1,17 @@
 package com.nhvn.forecastmvvm.ui.weather.current
 
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.nhvn.forecastmvvm.R
+import com.nhvn.forecastmvvm.data.network.ApixuWeatherApiService
+import kotlinx.android.synthetic.main.current_weather_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class CurrentWeatherFragment : Fragment() {
 
@@ -28,6 +32,11 @@ class CurrentWeatherFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(CurrentWeatherViewModel::class.java)
         // TODO: Use the ViewModel
+        val apiService = ApixuWeatherApiService()
+        GlobalScope.launch(Dispatchers.Main) {
+            val res = apiService.getCurrentWeather("London").await()
+            textView.text = res.currentWeatherEntry.toString()
+        }
     }
 
 }
